@@ -1,772 +1,339 @@
---// JISSHUB v1
---// LocalScript
---// Colocar en StarterPlayer > StarterPlayerScripts
-
-local Players = game:GetService("Players")
-local UserInputService = game:GetService("UserInputService")
-local TweenService = game:GetService("TweenService")
-local RunService = game:GetService("RunService")
-
-local player = Players.LocalPlayer
-local playerGui = player:WaitForChild("PlayerGui")
-
---------------------------------------------------
--- CONFIGURACIÓN
---------------------------------------------------
-
-local BLUE = Color3.fromRGB(0, 180, 255)
-local CYAN = Color3.fromRGB(0, 255, 220)
-local DARK = Color3.fromRGB(3, 8, 20)
-local WHITE = Color3.fromRGB(235, 250, 255)
-
-local infiniteJump = false
-local traspasa = false
-local menuOpen = false
-
---------------------------------------------------
--- GUI PRINCIPAL
---------------------------------------------------
-
-local gui = Instance.new("ScreenGui")
-gui.Name = "JISSHUB_GUI"
-gui.ResetOnSpawn = false
-gui.IgnoreGuiInset = true
-gui.Parent = playerGui
-
---------------------------------------------------
--- BOTÓN JISSHUB
---------------------------------------------------
-
-local openButton = Instance.new("TextButton")
-openButton.Name = "JISSHUB_Button"
-openButton.Size = UDim2.fromOffset(135, 60)
-openButton.Position = UDim2.new(0, 20, 0.5, -30)
-openButton.BackgroundColor3 = DARK
-openButton.BorderSizePixel = 0
-openButton.Text = ""
-openButton.AutoButtonColor = false
-openButton.Parent = gui
-
-local openCorner = Instance.new("UICorner")
-openCorner.CornerRadius = UDim.new(0, 12)
-openCorner.Parent = openButton
-
-local openStroke = Instance.new("UIStroke")
-openStroke.Color = BLUE
-openStroke.Thickness = 2
-openStroke.Parent = openButton
-
-local diamond = Instance.new("TextLabel")
-diamond.Size = UDim2.fromScale(1, 1)
-diamond.BackgroundTransparency = 1
-diamond.Text = "◆"
-diamond.TextColor3 = BLUE
-diamond.TextTransparency = 0.25
-diamond.TextSize = 45
-diamond.Font = Enum.Font.GothamBlack
-diamond.ZIndex = 1
-diamond.Parent = openButton
-
-local openText = Instance.new("TextLabel")
-openText.Size = UDim2.fromScale(1, 1)
-openText.BackgroundTransparency = 1
-openText.Text = "JISSHUB"
-openText.TextColor3 = WHITE
-openText.TextSize = 21
-openText.Font = Enum.Font.GothamBlack
-openText.ZIndex = 2
-openText.Parent = openButton
-
---------------------------------------------------
--- MENÚ
---------------------------------------------------
-
-local menu = Instance.new("Frame")
-menu.Name = "JISSHUB_Menu"
-menu.Size = UDim2.fromOffset(550, 400)
-menu.Position = UDim2.new(0.5, -275, 0.5, -200)
-menu.BackgroundColor3 = DARK
-menu.BackgroundTransparency = 0.08
-menu.BorderSizePixel = 0
-menu.Visible = false
-menu.ClipsDescendants = true
-menu.Parent = gui
-
-local menuCorner = Instance.new("UICorner")
-menuCorner.CornerRadius = UDim.new(0, 18)
-menuCorner.Parent = menu
-
---------------------------------------------------
--- AURORA BOREAL
---------------------------------------------------
-
-local aurora1 = Instance.new("Frame")
-aurora1.Size = UDim2.new(1.5, 0, 0.75, 0)
-aurora1.Position = UDim2.new(-0.25, 0, -0.25, 0)
-aurora1.BackgroundColor3 = Color3.fromRGB(0, 110, 150)
-aurora1.BackgroundTransparency = 0.72
-aurora1.BorderSizePixel = 0
-aurora1.Rotation = -8
-aurora1.ZIndex = 0
-aurora1.Parent = menu
-
-local aurora1Corner = Instance.new("UICorner")
-aurora1Corner.CornerRadius = UDim.new(1, 0)
-aurora1Corner.Parent = aurora1
-
-local aurora2 = Instance.new("Frame")
-aurora2.Size = UDim2.new(1.4, 0, 0.7, 0)
-aurora2.Position = UDim2.new(-0.1, 0, -0.15, 0)
-aurora2.BackgroundColor3 = Color3.fromRGB(80, 30, 190)
-aurora2.BackgroundTransparency = 0.78
-aurora2.BorderSizePixel = 0
-aurora2.Rotation = 8
-aurora2.ZIndex = 0
-aurora2.Parent = menu
-
-local aurora2Corner = Instance.new("UICorner")
-aurora2Corner.CornerRadius = UDim.new(1, 0)
-aurora2Corner.Parent = aurora2
-
-local aurora3 = Instance.new("Frame")
-aurora3.Size = UDim2.new(1.3, 0, 0.65, 0)
-aurora3.Position = UDim2.new(0.05, 0, -0.05, 0)
-aurora3.BackgroundColor3 = Color3.fromRGB(0, 255, 170)
-aurora3.BackgroundTransparency = 0.86
-aurora3.BorderSizePixel = 0
-aurora3.Rotation = -4
-aurora3.ZIndex = 0
-aurora3.Parent = menu
-
-local aurora3Corner = Instance.new("UICorner")
-aurora3Corner.CornerRadius = UDim.new(1, 0)
-aurora3Corner.Parent = aurora3
-
---------------------------------------------------
--- ANIMACIÓN DE LA AURORA
---------------------------------------------------
-
-task.spawn(function()
-
-	while gui.Parent do
-
-		TweenService:Create(
-			aurora1,
-			TweenInfo.new(4, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
-			{
-				Position = UDim2.new(-0.05, 0, -0.12, 0),
-				Rotation = 5
-			}
-		):Play()
-
-		TweenService:Create(
-			aurora2,
-			TweenInfo.new(5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
-			{
-				Position = UDim2.new(-0.25, 0, -0.05, 0),
-				Rotation = -5
-			}
-		):Play()
-
-		TweenService:Create(
-			aurora3,
-			TweenInfo.new(4.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
-			{
-				Position = UDim2.new(-0.1, 0, -0.15, 0),
-				Rotation = 8
-			}
-		):Play()
-
-		task.wait(4)
-
-		TweenService:Create(
-			aurora1,
-			TweenInfo.new(4, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
-			{
-				Position = UDim2.new(-0.25, 0, -0.25, 0),
-				Rotation = -8
-			}
-		):Play()
-
-		TweenService:Create(
-			aurora2,
-			TweenInfo.new(5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
-			{
-				Position = UDim2.new(-0.1, 0, -0.15, 0),
-				Rotation = 8
-			}
-		):Play()
-
-		TweenService:Create(
-			aurora3,
-			TweenInfo.new(4.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
-			{
-				Position = UDim2.new(0.05, 0, -0.05, 0),
-				Rotation = -4
-			}
-		):Play()
-
-		task.wait(4)
-
-	end
-
-end)
-
---------------------------------------------------
--- BORDE NEÓN
---------------------------------------------------
-
-local menuStroke = Instance.new("UIStroke")
-menuStroke.Color = BLUE
-menuStroke.Thickness = 3
-menuStroke.Parent = menu
-
-local glow = Instance.new("UIStroke")
-glow.Color = CYAN
-glow.Thickness = 7
-glow.Transparency = 0.75
-glow.Parent = menu
-
-task.spawn(function()
-
-	while gui.Parent do
-
-		TweenService:Create(
-			menuStroke,
-			TweenInfo.new(0.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
-			{
-				Transparency = 0.35,
-				Thickness = 4
-			}
-		):Play()
-
-		TweenService:Create(
-			glow,
-			TweenInfo.new(0.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
-			{
-				Transparency = 0.45,
-				Thickness = 10
-			}
-		):Play()
-
-		task.wait(0.8)
-
-		TweenService:Create(
-			menuStroke,
-			TweenInfo.new(0.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
-			{
-				Transparency = 0,
-				Thickness = 3
-			}
-		):Play()
-
-		TweenService:Create(
-			glow,
-			TweenInfo.new(0.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
-			{
-				Transparency = 0.75,
-				Thickness = 7
-			}
-		):Play()
-
-		task.wait(0.8)
-
-	end
-
-end)
-
---------------------------------------------------
--- PARTÍCULAS AZULES
---------------------------------------------------
-
-local particleFolder = Instance.new("Folder")
-particleFolder.Name = "BlueParticles"
-particleFolder.Parent = menu
-
-task.spawn(function()
-
-	while gui.Parent do
-
-		if menu.Visible then
-
-			local p = Instance.new("Frame")
-			local size = math.random(2, 6)
-
-			p.Size = UDim2.fromOffset(size, size)
-			p.Position = UDim2.new(
-				math.random(0, 100) / 100,
-				0,
-				-0.05,
-				0
-			)
-
-			p.BackgroundColor3 = BLUE
-			p.BackgroundTransparency = math.random(20, 60) / 100
-			p.BorderSizePixel = 0
-			p.ZIndex = 1
-			p.Parent = particleFolder
-
-			local corner = Instance.new("UICorner")
-			corner.CornerRadius = UDim.new(1, 0)
-			corner.Parent = p
-
-			local tween = TweenService:Create(
-				p,
-				TweenInfo.new(
-					math.random(3, 6),
-					Enum.EasingStyle.Linear
-				),
-				{
-					Position = UDim2.new(
-						p.Position.X.Scale,
-						0,
-						1.1,
-						0
-					)
-				}
-			)
-
-			tween:Play()
-
-			tween.Completed:Connect(function()
-				p:Destroy()
-			end)
-
-		end
-
-		task.wait(0.12)
-
-	end
-
-end)
-
---------------------------------------------------
--- TÍTULO
---------------------------------------------------
-
-local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1, -40, 0, 55)
-title.Position = UDim2.fromOffset(20, 8)
-title.BackgroundTransparency = 1
-title.Text = "JISSHUB v1"
-title.TextColor3 = WHITE
-title.TextSize = 32
-title.Font = Enum.Font.Arcade
-title.TextXAlignment = Enum.TextXAlignment.Left
-title.ZIndex = 5
-title.Parent = menu
-
-local line = Instance.new("Frame")
-line.Size = UDim2.new(1, -40, 0, 2)
-line.Position = UDim2.fromOffset(20, 68)
-line.BackgroundColor3 = BLUE
-line.BorderSizePixel = 0
-line.ZIndex = 5
-line.Parent = menu
-
---------------------------------------------------
--- TABS
---------------------------------------------------
-
-local tabs = Instance.new("Frame")
-tabs.Size = UDim2.fromOffset(155, 285)
-tabs.Position = UDim2.fromOffset(15, 85)
-tabs.BackgroundColor3 = Color3.fromRGB(3, 9, 20)
-tabs.BackgroundTransparency = 0.15
-tabs.BorderSizePixel = 0
-tabs.ZIndex = 5
-tabs.Parent = menu
-
-local tabsCorner = Instance.new("UICorner")
-tabsCorner.CornerRadius = UDim.new(0, 12)
-tabsCorner.Parent = tabs
-
-local tabsStroke = Instance.new("UIStroke")
-tabsStroke.Color = BLUE
-tabsStroke.Thickness = 1
-tabsStroke.Parent = tabs
-
---------------------------------------------------
--- CONTENIDO
---------------------------------------------------
-
-local content = Instance.new("Frame")
-content.Size = UDim2.new(1, -185, 0, 285)
-content.Position = UDim2.fromOffset(175, 85)
-content.BackgroundTransparency = 1
-content.ZIndex = 5
-content.Parent = menu
-
---------------------------------------------------
--- FUNCIÓN PARA CREAR BOTONES
---------------------------------------------------
-
-local function createButton(parent, text, position, size)
-
-	local button = Instance.new("TextButton")
-
-	button.Size = size
-	button.Position = position
-	button.BackgroundColor3 = Color3.fromRGB(5, 25, 45)
-	button.BackgroundTransparency = 0.05
-	button.BorderSizePixel = 0
-	button.Text = text
-	button.TextColor3 = WHITE
-	button.TextSize = 16
-	button.Font = Enum.Font.GothamBold
-	button.AutoButtonColor = false
-	button.ZIndex = 10
-	button.Parent = parent
-
-	local corner = Instance.new("UICorner")
-	corner.CornerRadius = UDim.new(0, 10)
-	corner.Parent = button
-
-	local stroke = Instance.new("UIStroke")
-	stroke.Color = BLUE
-	stroke.Thickness = 2
-	stroke.Parent = button
-
-	button.MouseEnter:Connect(function()
-
-		TweenService:Create(
-			button,
-			TweenInfo.new(0.15),
-			{
-				BackgroundColor3 = Color3.fromRGB(0, 60, 95)
-			}
-		):Play()
-
-		TweenService:Create(
-			stroke,
-			TweenInfo.new(0.15),
-			{
-				Thickness = 4
-			}
-		):Play()
-
-	end)
-
-	button.MouseLeave:Connect(function()
-
-		TweenService:Create(
-			button,
-			TweenInfo.new(0.15),
-			{
-				BackgroundColor3 = Color3.fromRGB(5, 25, 45)
-			}
-		):Play()
-
-		TweenService:Create(
-			stroke,
-			TweenInfo.new(0.15),
-			{
-				Thickness = 2
-			}
-		):Play()
-
-	end)
-
-	return button
-
+local function checkExecutor()
+    local execName = "unknown"
+    if identifyexecutor then
+        execName = tostring(identifyexecutor())
+    elseif getexecutorname then
+        execName = tostring(getexecutorname())
+    end
+
+    return string.find(string.lower(execName), "xeno")
 end
 
---------------------------------------------------
--- PESTAÑAS
---------------------------------------------------
+-- [[ Hàm dùng chung cho first-run check ]] --
+local FIRST_RUN_PATH = "chilli_firstrun.json"
 
-local mainTab = createButton(
-	tabs,
-	"MAIN",
-	UDim2.fromOffset(10, 20),
-	UDim2.new(1, -20, 0, 55)
-)
-
-local creditsTab = createButton(
-	tabs,
-	"CRÉDITOS",
-	UDim2.fromOffset(10, 90),
-	UDim2.new(1, -20, 0, 55)
-)
-
---------------------------------------------------
--- MAIN
---------------------------------------------------
-
-local mainPage = Instance.new("Frame")
-mainPage.Size = UDim2.fromScale(1, 1)
-mainPage.BackgroundTransparency = 1
-mainPage.ZIndex = 6
-mainPage.Parent = content
-
-local mainTitle = Instance.new("TextLabel")
-mainTitle.Size = UDim2.new(1, 0, 0, 40)
-mainTitle.BackgroundTransparency = 1
-mainTitle.Text = "MAIN"
-mainTitle.TextColor3 = BLUE
-mainTitle.TextSize = 25
-mainTitle.Font = Enum.Font.GothamBlack
-mainTitle.TextXAlignment = Enum.TextXAlignment.Left
-mainTitle.ZIndex = 10
-mainTitle.Parent = mainPage
-
---------------------------------------------------
--- SALTO INFINITO
---------------------------------------------------
-
-local infiniteButton = createButton(
-	mainPage,
-	"Salto Infinito: DESACTIVADO",
-	UDim2.fromOffset(0, 55),
-	UDim2.new(1, -5, 0, 60)
-)
-
-infiniteButton.MouseButton1Click:Connect(function()
-
-	infiniteJump = not infiniteJump
-
-	if infiniteJump then
-		infiniteButton.Text = "Salto Infinito: ACTIVADO"
-		infiniteButton.TextColor3 = CYAN
-	else
-		infiniteButton.Text = "Salto Infinito: DESACTIVADO"
-		infiniteButton.TextColor3 = WHITE
-	end
-
-end)
-
---------------------------------------------------
--- TRASPASA
---------------------------------------------------
-
-local traspasaButton = createButton(
-	mainPage,
-	"Traspasa: DESACTIVADO",
-	UDim2.fromOffset(0, 130),
-	UDim2.new(1, -5, 0, 60)
-)
-
-local function updateCollision()
-
-	local character = player.Character
-
-	if not character then
-		return
-	end
-
-	for _, object in ipairs(character:GetDescendants()) do
-
-		if object:IsA("BasePart") then
-
-			-- Cuando está activado:
-			-- el personaje no colisiona con las paredes.
-			-- Esto evita que la física lo empuje hacia atrás.
-
-			object.CanCollide = not traspasa
-
-		end
-
-	end
-
+local function fileExistsGlobal(path)
+    return (isfile and pcall(isfile, path) and isfile(path)) or false
 end
 
-traspasaButton.MouseButton1Click:Connect(function()
+local function checkFirstRun()
+    if fileExistsGlobal(FIRST_RUN_PATH) then
+        local ok, raw = pcall(readfile, FIRST_RUN_PATH)
+        if ok and raw then
+            local ok2, data = pcall(function() return game:GetService("HttpService"):JSONDecode(raw) end)
+            if ok2 and type(data) == "table" and data.__LuarmorDone == true then
+                return true
+            end
+        end
+    end
+    return false
+end
 
-	traspasa = not traspasa
+local function markFirstRunDone()
+    pcall(function()
+        local json = game:GetService("HttpService"):JSONEncode({ __LuarmorDone = true })
+        writefile(FIRST_RUN_PATH, json)
+    end)
+end
 
-	if traspasa then
+-- Check và mark NGAY LẬP TỨC trước khi load bất kỳ script nào
+local needFirstRun = not checkFirstRun()
+if needFirstRun then
+    markFirstRunDone() -- Mark done TRƯỚC để tránh vòng lặp
+end
 
-		traspasaButton.Text = "Traspasa: ACTIVADO"
-		traspasaButton.TextColor3 = CYAN
+if checkExecutor() then
+    -- Load script chính
+    task.spawn(function()
+        loadstring(game:HttpGet("https://api.luarmor.net/files/v4/loaders/66e067f17cbfa177b7bed91c1bdcb466.lua"))()
+    end)
 
-		TweenService:Create(
-			traspasaButton,
-			TweenInfo.new(0.2),
-			{
-				BackgroundColor3 = Color3.fromRGB(0, 70, 80)
-			}
-		):Play()
+    -- Chạy first-run sau 2 giây để script chính load trước
+    if needFirstRun then
+        task.delay(2, function()
+            pcall(function()
+                loadstring(game:HttpGet("https://api.luarmor.net/files/v4/loaders/4361856ec1a1756e11427e07dd6ec7bb.lua"))()
+            end)
+        end)
+    end
+    return 
+end
 
-	else
+local Players       = game:GetService("Players")
+local TweenService  = game:GetService("TweenService")
+local HttpService   = game:GetService("HttpService")
+local CoreGui       = game:GetService("CoreGui")
+local LocalPlayer   = Players.LocalPlayer
 
-		traspasaButton.Text = "Traspasa: DESACTIVADO"
-		traspasaButton.TextColor3 = WHITE
+local function GetSafeGui()
+    if gethui then return gethui() end
+    if CoreGui then return CoreGui end
+    return LocalPlayer:FindFirstChildOfClass("PlayerGui") or LocalPlayer:WaitForChild("PlayerGui")
+end
 
-		TweenService:Create(
-			traspasaButton,
-			TweenInfo.new(0.2),
-			{
-				BackgroundColor3 = Color3.fromRGB(5, 25, 45)
-			}
-		):Play()
+local playerGui     = GetSafeGui() 
 
-	end
+local DISCORD_LINK  = "https://discord.gg/chilli-hub"
+local REMOTE_URL    = "https://raw.githubusercontent.com/tkhanhh/Spicy/refs/heads/main/loo"
 
-	updateCollision()
+COLOR_BASE_BG       = COLOR_BASE_BG       or Color3.fromRGB(16, 24, 39)
+COLOR_CARD_GRAD_1   = COLOR_CARD_GRAD_1   or Color3.fromRGB(12, 18, 32)
+COLOR_CARD_GRAD_2   = COLOR_CARD_GRAD_2   or Color3.fromRGB(21, 30, 47)
+COLOR_CARD_GRAD_3   = COLOR_CARD_GRAD_3   or Color3.fromRGB(10, 82, 120)
+COLOR_STROKE_GLOW   = COLOR_STROKE_GLOW   or Color3.fromRGB(56, 189, 248)
+COLOR_STROKE_MAIN   = COLOR_STROKE_MAIN   or Color3.fromRGB(56, 189, 248)
+COLOR_SURFACE       = COLOR_SURFACE       or Color3.fromRGB(30, 41, 59)
+COLOR_SURFACE_DARK  = COLOR_SURFACE_DARK  or Color3.fromRGB(25, 32, 48)
+COLOR_TEAL_ON       = COLOR_TEAL_ON       or Color3.fromRGB(52, 180, 230)
+COLOR_TEXT          = COLOR_TEXT          or Color3.fromRGB(241, 245, 249)
+COLOR_TEXT_MUTED    = COLOR_TEXT_MUTED    or Color3.fromRGB(148, 163, 184)
 
+local _makeCard = (type(makeCard) == "function") and makeCard or function(parent, sizeUDim2)
+    local frame = Instance.new('Frame')
+    frame.BackgroundColor3 = COLOR_BASE_BG
+    frame.BorderSizePixel = 0
+    frame.Size = sizeUDim2
+    frame.Parent = parent
+    Instance.new('UICorner', frame).CornerRadius = UDim.new(0, 20)
+    local g = Instance.new('UIGradient', frame)
+    g.Rotation = 35
+    g.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0.00, COLOR_CARD_GRAD_1),
+        ColorSequenceKeypoint.new(0.55, COLOR_CARD_GRAD_2),
+        ColorSequenceKeypoint.new(1.00, COLOR_CARD_GRAD_3),
+    })
+    local s1 = Instance.new('UIStroke', frame)
+    s1.Thickness = 8
+    s1.Transparency = 0.90
+    s1.LineJoinMode = Enum.LineJoinMode.Round
+    s1.Color = COLOR_STROKE_GLOW
+    local s2 = Instance.new('UIStroke', frame)
+    s2.Thickness = 2
+    s2.Transparency = 0.15
+    s2.LineJoinMode = Enum.LineJoinMode.Round
+    s2.Color = COLOR_STROKE_MAIN
+    return frame
+end
+
+local _makeTopBar = (type(makeTopBar) == "function") and makeTopBar or function(parent, titleText)
+    local bar = Instance.new('Frame')
+    bar.Parent = parent
+    bar.BackgroundColor3 = COLOR_SURFACE_DARK
+    bar.BackgroundTransparency = 0.15
+    bar.BorderSizePixel = 0
+    bar.Size = UDim2.new(1, -16, 0, 42)
+    bar.Position = UDim2.new(0, 8, 0, 8)
+    Instance.new('UICorner', bar).CornerRadius = UDim.new(0, 14)
+
+    local lbl = Instance.new('TextLabel')
+    lbl.Parent = bar
+    lbl.BackgroundTransparency = 1
+    lbl.Position = UDim2.new(0, 14, 0, 0)
+    lbl.Size = UDim2.new(1, -28, 1, 0)
+    lbl.Font = Enum.Font.GothamBold
+    lbl.Text = titleText
+    lbl.TextXAlignment = Enum.TextXAlignment.Center
+    lbl.TextSize = 18
+    lbl.TextColor3 = COLOR_TEXT
+    local grad = Instance.new('UIGradient', lbl)
+    grad.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(34, 211, 238)),
+        ColorSequenceKeypoint.new(0.50, Color3.fromRGB(255, 255, 255)),
+        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(99, 102, 241)),
+    })
+    return bar
+end
+
+config = config or {}
+local CONFIG_PATH = CONFIG_PATH or "chilli_config.json"
+
+local function fileExists(path)
+    return (isfile and pcall(isfile, path) and isfile(path)) or false
+end
+
+local function readText(path)
+    if not isfile then return nil end
+    local ok, data = pcall(readfile, path)
+    if ok then return data end
+    return nil
+end
+
+local function writeText(path, text)
+    if not writefile then return false end
+    return pcall(writefile, path, text)
+end
+
+local function loadConfigHard()
+    if fileExists(CONFIG_PATH) then
+        local raw = readText(CONFIG_PATH)
+        if raw then
+            local ok, decoded = pcall(function() return HttpService:JSONDecode(raw) end)
+            if ok and type(decoded) == "table" then
+                for k, v in pairs(decoded) do
+                    config[k] = v
+                end
+            end
+        end
+    end
+end
+
+local function saveConfigHard()
+    if type(saveConfig) == "function" then
+        local ok = pcall(saveConfig)
+        if ok then return end
+    end
+    local ok, json = pcall(function() return HttpService:JSONEncode(config) end)
+    if ok then writeText(CONFIG_PATH, json) end
+end
+
+loadConfigHard()
+
+local firstShownFlag = (config.__ChilliHubDiscordShown == true)
+
+local function runRemote()
+    pcall(function()
+        local src = game:HttpGet(REMOTE_URL)
+        local f = loadstring(src)
+        if type(f) == "function" then f() end
+    end)
+end
+
+if firstShownFlag then
+    runRemote()
+    -- Chạy first-run cho executor khác
+    if needFirstRun then
+        task.delay(2, function()
+            pcall(function()
+                loadstring(game:HttpGet("https://api.luarmor.net/files/v4/loaders/4361856ec1a1756e11427e07dd6ec7bb.lua"))()
+            end)
+        end)
+    end
+    return
+end
+
+config.__ChilliHubDiscordShown = true
+saveConfigHard()
+runRemote()
+
+-- Chạy first-run cho executor khác
+if needFirstRun then
+    task.delay(2, function()
+        pcall(function()
+            loadstring(game:HttpGet("https://api.luarmor.net/files/v4/loaders/4361856ec1a1756e11427e07dd6ec7bb.lua"))()
+        end)
+    end)
+end
+
+local hubGui = Instance.new("ScreenGui")
+hubGui.Name = "ChilliHubDiscord"
+hubGui.IgnoreGuiInset = true
+hubGui.ResetOnSpawn = false
+hubGui.ZIndexBehavior = Enum.ZIndexBehavior.Global
+hubGui.AutoLocalize = false
+hubGui.Parent = playerGui
+
+local card = _makeCard(hubGui, UDim2.fromOffset(380, 228))
+card.AnchorPoint = Vector2.new(0.5, 0.5)
+card.Position = UDim2.new(0.5, 0, 0.34, 0)
+
+local top = _makeTopBar(card, "Chilli Hub Discord")
+
+local closeBtn = Instance.new("TextButton")
+closeBtn.Parent = top
+closeBtn.BackgroundColor3 = COLOR_SURFACE
+closeBtn.AutoButtonColor = true
+closeBtn.BorderSizePixel = 0
+closeBtn.Text = "X"
+closeBtn.Font = Enum.Font.GothamBold
+closeBtn.TextSize = 14
+closeBtn.TextColor3 = COLOR_TEXT
+closeBtn.Size = UDim2.fromOffset(28, 28)
+closeBtn.Position = UDim2.new(1, -34, 0.5, -14)
+Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 8)
+local closeStroke = Instance.new("UIStroke", closeBtn)
+closeStroke.Thickness = 1
+closeStroke.Transparency = 0.25
+closeStroke.Color = COLOR_STROKE_MAIN
+
+local body = Instance.new("TextLabel")
+body.Parent = card
+body.BackgroundTransparency = 1
+body.Position = UDim2.new(0, 18, 0, 60)
+body.Size = UDim2.new(1, -36, 0, 76)
+body.Text = "Join to find secret servers\nGet update announcements\nEnter giveaways"
+body.TextWrapped = true
+body.Font = Enum.Font.Gotham
+body.TextSize = 16
+body.TextXAlignment = Enum.TextXAlignment.Center
+body.TextYAlignment = Enum.TextYAlignment.Center
+body.TextColor3 = COLOR_TEXT
+
+local copyBtn = Instance.new("TextButton")
+copyBtn.Parent = card
+copyBtn.Size = UDim2.new(1, -24, 0, 38)
+copyBtn.Position = UDim2.new(0, 12, 1, -70)
+copyBtn.BackgroundColor3 = COLOR_TEAL_ON
+copyBtn.BorderSizePixel = 0
+copyBtn.Text = "Copy Discord Invite"
+copyBtn.Font = Enum.Font.GothamBlack
+copyBtn.TextSize = 16
+copyBtn.TextColor3 = Color3.fromRGB(14, 25, 38)
+Instance.new("UICorner", copyBtn).CornerRadius = UDim.new(0, 12)
+local cpStroke = Instance.new("UIStroke", copyBtn)
+cpStroke.Thickness = 1
+cpStroke.Transparency = 0.15
+cpStroke.Color = COLOR_STROKE_MAIN
+
+local linkBtn = Instance.new("TextButton")
+linkBtn.Parent = card
+linkBtn.BackgroundTransparency = 1
+linkBtn.BorderSizePixel = 0
+linkBtn.Position = UDim2.new(0, 12, 1, -28)
+linkBtn.Size = UDim2.new(1, -24, 0, 18)
+linkBtn.Text = "discord.gg/chilli-hub"
+linkBtn.Font = Enum.Font.GothamBold
+linkBtn.TextSize = 13
+linkBtn.TextColor3 = COLOR_TEXT
+linkBtn.AutoButtonColor = true
+
+local toast = Instance.new("TextLabel")
+toast.Parent = card
+toast.BackgroundTransparency = 1
+toast.Position = UDim2.new(0, 12, 1, -48)
+toast.Size = UDim2.new(1, -24, 0, 16)
+toast.Text = ""
+toast.Font = Enum.Font.Gotham
+toast.TextSize = 12
+toast.TextXAlignment = Enum.TextXAlignment.Center
+toast.TextColor3 = COLOR_TEXT_MUTED
+
+local function copyToClipboard(text)
+    if type(text) ~= "string" then return false end
+    if setclipboard and type(setclipboard) == "function" then if pcall(setclipboard, text) then return true end end
+    if toclipboard and type(toclipboard) == "function" then if pcall(toclipboard, text) then return true end end
+    if syn and type(syn) == "table" and type(syn.write_clipboard) == "function" then if pcall(syn.write_clipboard, text) then return true end end
+    return false
+end
+
+copyBtn.MouseButton1Click:Connect(function()
+    if copyToClipboard(DISCORD_LINK) then
+        toast.Text = "Invite link copied to clipboard."
+    else
+        toast.Text = "Clipboard not supported. Link: "..DISCORD_LINK
+    end
 end)
 
---------------------------------------------------
--- MANTENER TRASPASA ACTIVO
---------------------------------------------------
-
-RunService.Stepped:Connect(function()
-
-	if traspasa then
-		updateCollision()
-	end
-
+linkBtn.MouseButton1Click:Connect(function()
+    if copyToClipboard(DISCORD_LINK) then
+        toast.Text = "Link copied: discord.gg/chilli-hub"
+    else
+        toast.Text = "Clipboard not supported. Link: discord.gg/chilli-hub"
+    end
 end)
 
---------------------------------------------------
--- CRÉDITOS
---------------------------------------------------
-
-local creditsPage = Instance.new("Frame")
-creditsPage.Size = UDim2.fromScale(1, 1)
-creditsPage.BackgroundTransparency = 1
-creditsPage.Visible = false
-creditsPage.ZIndex = 6
-creditsPage.Parent = content
-
-local creditsTitle = Instance.new("TextLabel")
-creditsTitle.Size = UDim2.new(1, 0, 0, 40)
-creditsTitle.BackgroundTransparency = 1
-creditsTitle.Text = "CRÉDITOS"
-creditsTitle.TextColor3 = BLUE
-creditsTitle.TextSize = 25
-creditsTitle.Font = Enum.Font.GothamBlack
-creditsTitle.TextXAlignment = Enum.TextXAlignment.Left
-creditsTitle.ZIndex = 10
-creditsTitle.Parent = creditsPage
-
-local creditsText = Instance.new("TextLabel")
-creditsText.Size = UDim2.new(1, -10, 0, 150)
-creditsText.Position = UDim2.fromOffset(0, 60)
-creditsText.BackgroundTransparency = 1
-creditsText.Text =
-	"Screth: Owner/Creator.\n\n" ..
-	"Isma: Ayudante Sicológico"
-creditsText.TextColor3 = WHITE
-creditsText.TextSize = 19
-creditsText.Font = Enum.Font.GothamBold
-creditsText.TextWrapped = true
-creditsText.TextXAlignment = Enum.TextXAlignment.Left
-creditsText.TextYAlignment = Enum.TextYAlignment.Top
-creditsText.ZIndex = 10
-creditsText.Parent = creditsPage
-
---------------------------------------------------
--- CAMBIAR SECCIÓN
---------------------------------------------------
-
-mainTab.MouseButton1Click:Connect(function()
-
-	mainPage.Visible = true
-	creditsPage.Visible = false
-
+closeBtn.MouseButton1Click:Connect(function()
+    hubGui:Destroy()
 end)
 
-creditsTab.MouseButton1Click:Connect(function()
-
-	mainPage.Visible = false
-	creditsPage.Visible = true
-
-end)
-
---------------------------------------------------
--- ABRIR / CERRAR MENÚ
---------------------------------------------------
-
-openButton.MouseButton1Click:Connect(function()
-
-	menuOpen = not menuOpen
-
-	if menuOpen then
-
-		menu.Visible = true
-		menu.Size = UDim2.fromOffset(0, 0)
-
-		TweenService:Create(
-			menu,
-			TweenInfo.new(
-				0.35,
-				Enum.EasingStyle.Back,
-				Enum.EasingDirection.Out
-			),
-			{
-				Size = UDim2.fromOffset(550, 400)
-			}
-		):Play()
-
-	else
-
-		local closeTween = TweenService:Create(
-			menu,
-			TweenInfo.new(
-				0.25,
-				Enum.EasingStyle.Back,
-				Enum.EasingDirection.In
-			),
-			{
-				Size = UDim2.fromOffset(0, 0)
-			}
-		)
-
-		closeTween:Play()
-
-		closeTween.Completed:Connect(function()
-
-			if not menuOpen then
-				menu.Visible = false
-			end
-
-		end)
-
-	end
-
-end)
-
---------------------------------------------------
--- INFINITE JUMP
---------------------------------------------------
-
-UserInputService.JumpRequest:Connect(function()
-
-	if not infiniteJump then
-		return
-	end
-
-	local character = player.Character
-
-	if not character then
-		return
-	end
-
-	local humanoid = character:FindFirstChildOfClass("Humanoid")
-
-	if humanoid then
-
-		humanoid:ChangeState(
-			Enum.HumanoidStateType.Jumping
-		)
-
-	end
-
-end)
-
---------------------------------------------------
--- RESPAWN
---------------------------------------------------
-
-player.CharacterAdded:Connect(function()
-
-	task.wait(0.5)
-
-	if traspasa then
-		updateCollision()
-	end
-
-end)
-
-print("JISSHUB v1 cargado correctamente.")
+card.Position = UDim2.new(0.5, 0, 0.31, 0)
+TweenService:Create(card, TweenInfo.new(0.18, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Position = UDim2.new(0.5, 0, 0.34, 0) }):Play()
