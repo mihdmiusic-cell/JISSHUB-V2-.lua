@@ -24,7 +24,7 @@ local traspasa = false
 local menuOpen = false
 
 --------------------------------------------------
--- GUI
+-- GUI PRINCIPAL
 --------------------------------------------------
 
 local gui = Instance.new("ScreenGui")
@@ -143,7 +143,7 @@ aurora3Corner.CornerRadius = UDim.new(1, 0)
 aurora3Corner.Parent = aurora3
 
 --------------------------------------------------
--- ANIMACIÓN AURORA
+-- ANIMACIÓN DE LA AURORA
 --------------------------------------------------
 
 task.spawn(function()
@@ -207,7 +207,9 @@ task.spawn(function()
 		):Play()
 
 		task.wait(4)
+
 	end
+
 end)
 
 --------------------------------------------------
@@ -268,11 +270,13 @@ task.spawn(function()
 		):Play()
 
 		task.wait(0.8)
+
 	end
+
 end)
 
 --------------------------------------------------
--- PARTÍCULAS
+-- PARTÍCULAS AZULES
 --------------------------------------------------
 
 local particleFolder = Instance.new("Folder")
@@ -327,10 +331,13 @@ task.spawn(function()
 			tween.Completed:Connect(function()
 				p:Destroy()
 			end)
+
 		end
 
 		task.wait(0.12)
+
 	end
+
 end)
 
 --------------------------------------------------
@@ -391,7 +398,7 @@ content.ZIndex = 5
 content.Parent = menu
 
 --------------------------------------------------
--- FUNCIÓN CREAR BOTÓN
+-- FUNCIÓN PARA CREAR BOTONES
 --------------------------------------------------
 
 local function createButton(parent, text, position, size)
@@ -461,6 +468,7 @@ local function createButton(parent, text, position, size)
 	end)
 
 	return button
+
 end
 
 --------------------------------------------------
@@ -518,16 +526,13 @@ infiniteButton.MouseButton1Click:Connect(function()
 	infiniteJump = not infiniteJump
 
 	if infiniteJump then
-
 		infiniteButton.Text = "Salto Infinito: ACTIVADO"
 		infiniteButton.TextColor3 = CYAN
-
 	else
-
 		infiniteButton.Text = "Salto Infinito: DESACTIVADO"
 		infiniteButton.TextColor3 = WHITE
-
 	end
+
 end)
 
 --------------------------------------------------
@@ -552,10 +557,17 @@ local function updateCollision()
 	for _, object in ipairs(character:GetDescendants()) do
 
 		if object:IsA("BasePart") then
+
+			-- Cuando está activado:
+			-- el personaje no colisiona con las paredes.
+			-- Esto evita que la física lo empuje hacia atrás.
+
 			object.CanCollide = not traspasa
+
 		end
 
 	end
+
 end
 
 traspasaButton.MouseButton1Click:Connect(function()
@@ -591,10 +603,11 @@ traspasaButton.MouseButton1Click:Connect(function()
 	end
 
 	updateCollision()
+
 end)
 
 --------------------------------------------------
--- MANTENER TRASPASA
+-- MANTENER TRASPASA ACTIVO
 --------------------------------------------------
 
 RunService.Stepped:Connect(function()
@@ -644,17 +657,21 @@ creditsText.ZIndex = 10
 creditsText.Parent = creditsPage
 
 --------------------------------------------------
--- CAMBIO DE SECCIÓN
+-- CAMBIAR SECCIÓN
 --------------------------------------------------
 
 mainTab.MouseButton1Click:Connect(function()
+
 	mainPage.Visible = true
 	creditsPage.Visible = false
+
 end)
 
 creditsTab.MouseButton1Click:Connect(function()
+
 	mainPage.Visible = false
 	creditsPage.Visible = true
+
 end)
 
 --------------------------------------------------
@@ -707,6 +724,7 @@ openButton.MouseButton1Click:Connect(function()
 		end)
 
 	end
+
 end)
 
 --------------------------------------------------
@@ -728,9 +746,11 @@ UserInputService.JumpRequest:Connect(function()
 	local humanoid = character:FindFirstChildOfClass("Humanoid")
 
 	if humanoid then
+
 		humanoid:ChangeState(
 			Enum.HumanoidStateType.Jumping
 		)
+
 	end
 
 end)
